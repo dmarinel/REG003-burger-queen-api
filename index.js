@@ -15,7 +15,7 @@ mongoose
     useUnifiedTopology: true,
   })
   .then((db)=>console.info(db.connections))
-  .catch((err) => console.info(err);
+  .catch((err) => console.info(err));
 
 app.set('config', config);
 app.set('pkg', pkg);
