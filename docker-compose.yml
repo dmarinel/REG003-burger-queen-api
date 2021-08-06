@@ -1,12 +1,32 @@
 version: "3"
 services:
-  db:
+  bq:
     # TODO: configura tu imagen de base de datos, te recomendamos una de estas:
-    # https://hub.docker.com/_/mongo
-    # https://hub.docker.com/_/postgres
-    # https://hub.docker.com/_/mysql
+    image: mongo:4
+    volumes:
+      - ./db-data:/data/dbProducts
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: bqProducts
+      MONGO_INITDB_ROOT_PASSWORD: 11235
+    restart: always
     networks:
       - private
+    ports:
+      - '27018:27017'
+  # mysqldb:
+  #   # TODO: configura tu imagen de base ddatos, te recomendamos una de estas:
+  #   image: mysql:5
+  #   volumes:
+  #     - ./db-data:/var/lib/mysql
+  #   environment:
+  #     MYSQL_ROOT_PASSWORD: supersecret
+  #     MYSQL_DATABASE: bq
+  #     MYSQL_USER: bq
+  #     MYSQL_PASSWORD: secret
+  #   restart: always
+  #   networks:
+  #     - private
+    
   node:
     image: node:12 # https://hub.docker.com/_/node/
     user: node
@@ -14,8 +34,8 @@ services:
     environment:
       NODE_ENV: production
       PORT: 8080
-      DB_URL: <CONNECTION STRING>
-      JWT_SECRET: xxxxxxxx
+      DB_URL_MONGO: mongodb://bqProducts:11235@bq:27018/bq?authSource=admin
+      JWT_SECRET: api_bq
       ADMIN_EMAIL: admin@localhost
       ADMIN_PASSWORD: changeme
     volumes:
@@ -25,11 +45,12 @@ services:
     ports:
       # mapeamos el puerto 8080 de nuestro contenedor al puerto 80 de nuestra
       # máquina
-      - 80:8080
+      - 3000:8080
     # reinstalamos las dependencias y levantamos el servidor
     command: bash -c 'rm -rf node_modules && npm install && npm start'
+    # command: bash -c 'rm -rf node_modules && npm install && npm run dev'
     depends_on:
-      - db
+      - bq
     networks:
       - public
       - private
