@@ -3,7 +3,12 @@ const Schema = mongoose.Schema
 const bcrypt = require('bcrypt')
 
 const userSchema = new Schema({
-    email: { type: String, unique: true, lowercase: true },
+    email: { 
+        type: String, 
+        unique: true, 
+        lowercase: true,
+        require: [true, 'Email is required']
+    },
     password: { type: String, select: false },
     roles: {
         admin: { type: Boolean }
