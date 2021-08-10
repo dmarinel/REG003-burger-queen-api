@@ -10,13 +10,19 @@ const { port, dbUrl, secret } = config;
 const app = express();
 
 // TODO: Conexión a la Base de Datos (MongoDB o MySQL)
-mongoose
-  .connect(dbUrl, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
-  .then(db=>console.info(db.connection))
-  .catch(console.error);
+
+  mongoose
+    .connect(dbUrl, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    }, err => {
+      if(err){
+        console.error(err);
+      }else{
+        console.log('mongodb successfully connected');
+      }
+    })
+    
 
 app.set('config', config);
 app.set('pkg', pkg);
