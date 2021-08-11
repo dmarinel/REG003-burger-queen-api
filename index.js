@@ -17,6 +17,8 @@ mongoose
   .then((db)=>console.info(`Hay conexión: ${db.connections}`))
   .catch((err) => console.info(`Error al conectar a la base de datos: ${err}`));
 
+  mongoose.set('useCreateIndex', true);
+
 app.set('config', config);
 app.set('pkg', pkg);
 
