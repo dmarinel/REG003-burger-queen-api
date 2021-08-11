@@ -9,7 +9,11 @@ const userSchema = new Schema({
         lowercase: true,
         require: [true, 'Email is required']
     },
-    password: { type: String, select: false },
+    password: { 
+        type: String, 
+        select: false,
+        require: true
+    },
     roles: {
         admin: { type: Boolean }
     }
