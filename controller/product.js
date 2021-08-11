@@ -25,7 +25,6 @@ const createProduct = (req, resp, next) => {
   
   Product.create(product, (err, productStored) => { //cuando se almacene, mongodb le adiciona un id
     if (err) resp.status(500).send({message: `Oppss... There is an error in the data base: ${err}`})
-
     else { resp.status(200).send({ product: productStored })}
   }) 
 }
