@@ -14,8 +14,8 @@ mongoose
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
-  .then((db)=>console.info(db.connections))
-  .catch((err) => console.info(err));
+  .then((db)=>console.info(`Hay conexión: ${db.connections}`))
+  .catch((err) => console.info(`Error al conectar a la base de datos: ${err}`));
 
 app.set('config', config);
 app.set('pkg', pkg);
