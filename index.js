@@ -15,22 +15,10 @@ mongoose
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
-  .then((db) => console.info(`Hay conexión: ${db.connections}`))
+  .then((db) => console.info('mongodb successfully connected'))
   .catch((err) => console.info(`Error al conectar a la base de datos: ${err}`));
 
 mongoose.set('useCreateIndex', true);
-
-mongoose
-  .connect(dbUrl, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  }, (err) => {
-    if (err) {
-      console.error(err);
-    } else {
-      console.log('mongodb successfully connected');
-    }
-  });
 
 app.set('config', config);
 app.set('pkg', pkg);

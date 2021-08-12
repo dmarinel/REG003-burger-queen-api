@@ -1,4 +1,5 @@
 const bcrypt = require('bcrypt');
+const User = require('../models/user');
 
 const {
   requireAuth,
@@ -25,6 +26,20 @@ const initAdminUser = (app, next) => {
   };
 
   // TODO: crear usuaria admin
+  const findUserByEmail = User.findOne({ email: adminEmail });
+
+  findUserByEmail.then((docs) => {
+    if (docs) {
+      console.log('this e-mail exists');
+      return next(200);
+    }
+    User.create(adminUser);
+  })
+    .catch((err) => {
+      if (err !== 200) {
+        console.log('there is a database problem');
+      }
+    });
   next();
 };
 
