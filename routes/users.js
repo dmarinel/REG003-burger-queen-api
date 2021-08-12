@@ -77,13 +77,8 @@ module.exports = (app, next) => {
    * @code {401} si no hay cabecera de autenticación
    * @code {403} si no es ni admin
    */
-<<<<<<< HEAD
   // app.get('/users', requireAdmin, getUsers);
   app.get('/users', getUsers);
-=======
-  app.get('/users', getUsers);
-//,requireAdmin,
->>>>>>> a3a9663f8088bfaa4c07e91d489c46b0533b8eba
   /**
    * @name GET /users/:uid
    * @description Obtiene información de una usuaria
@@ -122,14 +117,9 @@ module.exports = (app, next) => {
    * @code {401} si no hay cabecera de autenticación
    * @code {403} si ya existe usuaria con ese `email`
    */
-<<<<<<< HEAD
   // app.post('/users', requireAdmin, createUsers});
   app.post('/users', createUsers);
 
-=======
-  app.post('/users', createUser);
-    // requireAdmin, 
->>>>>>> a3a9663f8088bfaa4c07e91d489c46b0533b8eba
   /**
    * @name PUT /users
    * @description Modifica una usuaria

@@ -17,6 +17,5 @@ module.exports = (app, nextMain) => {
 
   app.post('/auth', singin);
 
-
   return nextMain();
 };
