@@ -5,6 +5,7 @@ const authMiddleware = require('./middleware/auth');
 const errorHandler = require('./middleware/error');
 const routes = require('./routes');
 const pkg = require('./package.json');
+
 const { port, dbUrl, secret } = config;
 const app = express();
 
@@ -14,10 +15,10 @@ mongoose
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
-  .then((db)=>console.info(`Hay conexión: ${db.connections}`))
+  .then((db) => console.info('mongodb successfully connected'))
   .catch((err) => console.info(`Error al conectar a la base de datos: ${err}`));
 
-  mongoose.set('useCreateIndex', true);
+mongoose.set('useCreateIndex', true);
 
 app.set('config', config);
 app.set('pkg', pkg);

@@ -1,18 +1,20 @@
 const bcrypt = require('bcrypt');
+const User = require('../models/user');
 
 const {
   requireAuth,
   requireAdmin,
+
 } = require('../middleware/auth');
 
 const {
-  getUsers, 
-  createUser,
+  getUsers,
+  createUsers,
 } = require('../controller/users');
-
 
 const initAdminUser = (app, next) => {
   const { adminEmail, adminPassword } = app.get('config');
+  // console.log(!adminEmail, adminPassword);
   if (!adminEmail || !adminPassword) {
     return next();
   }
@@ -24,9 +26,22 @@ const initAdminUser = (app, next) => {
   };
 
   // TODO: crear usuaria admin
+  const findUserByEmail = User.findOne({ email: adminEmail });
+
+  findUserByEmail.then((docs) => {
+    if (docs) {
+      console.log('this e-mail exists');
+      return next(200);
+    }
+    User.create(adminUser);
+  })
+    .catch((err) => {
+      if (err !== 200) {
+        console.log('there is a database problem');
+      }
+    });
   next();
 };
-
 
 /*
  * Diagrama de flujo de una aplicación y petición en node - express :
@@ -77,8 +92,8 @@ module.exports = (app, next) => {
    * @code {401} si no hay cabecera de autenticación
    * @code {403} si no es ni admin
    */
+  // app.get('/users', requireAdmin, getUsers);
   app.get('/users', getUsers);
-//,requireAdmin,
   /**
    * @name GET /users/:uid
    * @description Obtiene información de una usuaria
@@ -117,8 +132,9 @@ module.exports = (app, next) => {
    * @code {401} si no hay cabecera de autenticación
    * @code {403} si ya existe usuaria con ese `email`
    */
-  app.post('/users', createUser);
-    // requireAdmin, 
+  // app.post('/users', requireAdmin, createUsers});
+  app.post('/users', createUsers);
+
   /**
    * @name PUT /users
    * @description Modifica una usuaria
