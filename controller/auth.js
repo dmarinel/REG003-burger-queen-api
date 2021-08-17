@@ -11,7 +11,7 @@ const signIn = async (req, resp, next) => {
     return next(400);
   }
 
-  // TODO: autenticar a la usuarix
+  // TODO [x]: autenticar a la usuarix
 
   try {
     const userEmail = await User.findOne({
