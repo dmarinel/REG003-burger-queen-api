@@ -5,45 +5,48 @@ const User = require('../models/user');
 
 const { secret } = config;
 
-const singin = async (req, resp, next) => {
-  console.log(req.body);
+const signIn = async (req, resp, next) => {
   const { email, password } = req.body;
   if (!email || !password) {
     return next(400);
   }
 
+  // TODO: autenticar a la usuarix
+  const userEmail = await User.findOne({
+    email,
+  });
   try {
-    const userEmail = await User.findOne({
-      email,
-    });
-    console.log(userEmail);
-    console.log(password);
+    // const userEmail = await User.findOne({
+    //   email,
+    // });
+
     if (!userEmail) {
       return resp.status(400).json({
         message: 'This user does not exist!',
       });
     }
-
     const validPassword = await bcrypt.compare(password, userEmail.password);
     if (!validPassword) return resp.status(400).json({ message: 'Invalid Email or Password.' });
-    // await bcrypt.compare(password, userEmail.password, (err, data) => {
-    //   // if (err) console.log(err);
-    //   console.log(typeof password, typeof userEmail.password);
-    //   if (!data) {
-    //     return resp.status(404).json({ message: 'holalallal' });
-    //     // console.log(`hola mundo`);
-    //   }
-    // });
   } catch (error) {
     console.log('line35');
     console.log(error);
   }
 
-  // // TODO: autenticar a la usuarix
-  // return 1;
-  next();
+  // Create a new token with email in the payload
+  jwt.sign({
+    // eslint-disable-next-line no-underscore-dangle
+    uid: userEmail._id,
+    email: userEmail.email,
+    roles: userEmail.roles,
+  }, secret, {
+    algorithm: 'HS256',
+    expiresIn: 300,
+  }, (err, token) => {
+    if (err) console.error(err);
+    return resp.status(200).json({ token });
+  });
 };
 
 module.exports = {
-  singin,
+  signIn,
 };

@@ -1,4 +1,4 @@
-const { singin } = require('../controller/auth');
+const { signIn } = require('../controller/auth');
 
 /** @module auth */
 module.exports = (app, nextMain) => {
@@ -15,7 +15,7 @@ module.exports = (app, nextMain) => {
    * @auth No requiere autenticación
    */
 
-  app.post('/auth', singin);
+  app.post('/auth', signIn);
 
   return nextMain();
 };
