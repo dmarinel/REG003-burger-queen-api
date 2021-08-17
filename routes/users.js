@@ -1,45 +1,33 @@
 const bcrypt = require('bcrypt');
 const User = require('../models/user');
-
-const {
-  requireAuth,
-  requireAdmin,
-
-} = require('../middleware/auth');
-
-const {
-  getUsers,
-  createUsers,
-} = require('../controller/users');
+const {  requireAuth,  requireAdmin } = require('../middleware/auth');
+const {  getUsers,  createUsers } = require('../controller/users');
 
 const initAdminUser = (app, next) => {
+  // traigo los datos del administrador que están en el archivo config.js
   const { adminEmail, adminPassword } = app.get('config');
   // console.log(!adminEmail, adminPassword);
   if (!adminEmail || !adminPassword) {
     return next();
   }
-
   const adminUser = {
     email: adminEmail,
     password: bcrypt.hashSync(adminPassword, 10),
     roles: { admin: true },
   };
-
-  // TODO [x]: crear usuaria admin
-
+  // TO DO: crear usuaria admin
   const findUserByEmail = User.findOne({ email: adminEmail });
 
   findUserByEmail.then((docs) => {
     if (docs) {
-      console.log('this e-mail exists');
+      console.log('This e-mail exists.');
       return next(200);
     }
+    // método del modelo mongoose para guardarlo en la BD
     User.create(adminUser);
   })
     .catch((err) => {
-      if (err !== 200) {
-        console.log('there is a database problem');
-      }
+      if (err !== 200) { console.log('There is a database problem'); }
     });
   next();
 };

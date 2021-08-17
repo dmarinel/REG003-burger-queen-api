@@ -2,7 +2,6 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const config = require('../config');
 const User = require('../models/user');
-
 const { secret } = config;
 
 const signIn = async (req, resp, next) => {
@@ -11,11 +10,15 @@ const signIn = async (req, resp, next) => {
     return next(400);
   }
 
+<<<<<<< HEAD
   // TODO [x]: autenticar a la usuarix
+=======
+  // TO DO: autenticar a la usuarix
+>>>>>>> 0d688ae0602d5bb29a9c8bfb00e8b712ec3129b6
 
   try {
     const userEmail = await User.findOne({
-      email,
+      email: req.body.email,
     });
 
     if (!userEmail) {
@@ -23,9 +26,11 @@ const signIn = async (req, resp, next) => {
         message: 'This user does not exist!',
       });
     }
-
     const validPassword = await bcrypt.compare(password, userEmail.password);
+    
     if (!validPassword) return resp.status(400).json({ message: 'Invalid Email or Password.' });
+    
+    // resp.status(200).json({ message: 'Email & password are valid.' })
 
     // Create a new token with email in the payload
     jwt.sign({
@@ -41,11 +46,23 @@ const signIn = async (req, resp, next) => {
       return resp.status(200).json({ token });
     });
   } catch (error) {
-    console.log('line35');
     console.log(error);
   }
+
+  // next();
 };
 
 module.exports = {
   signIn,
 };
+
+
+// function signUp (req, resp){
+//   const user = new User({
+//     email: req.body.email,
+//   })
+
+//   user.save(()=>{
+
+//   })
+// }

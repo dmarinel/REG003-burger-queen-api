@@ -24,6 +24,8 @@ app.set('config', config);
 app.set('pkg', pkg);
 
 // parse application/x-www-form-urlencoded
+// el servidor será capaz de entender los datos que le piden 
+// a través de un form y convertirlo en un obj de JS
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(authMiddleware(secret));
@@ -33,9 +35,7 @@ routes(app, (err) => {
   if (err) {
     throw err;
   }
-
   app.use(errorHandler);
-
   app.listen(port, () => {
     console.info(`App listening on port ${port}`);
   });
