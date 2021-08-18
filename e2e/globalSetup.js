@@ -82,7 +82,6 @@ const checkAdminCredentials = () => fetch('/auth', {
     if (resp.status !== 200) {
       throw new Error('Could not authenticate as admin user');
     }
-
     return resp.json();
   })
   .then(({ token }) => Object.assign(__e2e, { adminToken: token }));
@@ -112,11 +111,9 @@ module.exports = () => new Promise((resolve, reject) => {
   }
 
   // TO DO: Configurar DB de tests
-  // await setUp();
-  // process.env.DB_URL = process.env.MONGO_URL;
 
   mongodbsetUp().then(()=>{
-    console.info('Staring local server...');
+    console.info('Starting local server...');
     const child = spawn('npm', ['start', process.env.PORT || 8888], {
       cwd: path.resolve(__dirname, '../'),
       stdio: ['ignore', 'pipe', 'pipe'],
