@@ -81,8 +81,8 @@ module.exports = (app, next) => {
    * @code {401} si no hay cabecera de autenticación
    * @code {403} si no es ni admin
    */
-  // app.get('/users', requireAdmin, getUsers);
-  app.get('/users', getUsers);
+  app.get('/users', requireAdmin, getUsers);
+  // app.get('/users', getUsers);
   /**
    * @name GET /users/:uid
    * @description Obtiene información de una usuaria
@@ -121,8 +121,8 @@ module.exports = (app, next) => {
    * @code {401} si no hay cabecera de autenticación
    * @code {403} si ya existe usuaria con ese `email`
    */
-  // app.post('/users', requireAdmin, createUsers});
-  app.post('/users', createUsers);
+  app.post('/users', requireAdmin, createUsers);
+  // app.post('/users', createUsers);
 
   /**
    * @name PUT /users
