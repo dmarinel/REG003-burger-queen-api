@@ -10,11 +10,7 @@ const signIn = async (req, resp, next) => {
     return next(400);
   }
 
-<<<<<<< HEAD
-  // TODO [x]: autenticar a la usuarix
-=======
   // TO DO: autenticar a la usuarix
->>>>>>> 0d688ae0602d5bb29a9c8bfb00e8b712ec3129b6
 
   try {
     const userEmail = await User.findOne({
@@ -40,7 +36,7 @@ const signIn = async (req, resp, next) => {
       roles: userEmail.roles,
     }, secret, {
       algorithm: 'HS256',
-      expiresIn: 300,
+      expiresIn: 3000,
     }, (err, token) => {
       if (err) console.error(err);
       return resp.status(200).json({ token });
