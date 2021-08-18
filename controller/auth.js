@@ -35,7 +35,7 @@ const signIn = async (req, resp, next) => {
       roles: userEmail.roles,
     }, secret, {
       algorithm: 'HS256',
-      expiresIn: 300,
+      expiresIn: 3000,
     }, (err, token) => {
       if (err) console.error(err);
       return resp.status(200).json({ token });

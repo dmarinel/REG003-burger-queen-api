@@ -1,7 +1,10 @@
 const jwt = require('jsonwebtoken');
+const user = require('../models/user');
 
-module.exports = (secret) => (req, resp, next) => {
+module.exports = (secret) => async (req, resp, next) => {
   const { authorization } = req.headers;
+
+  // console.log(authorization);s
 
   if (!authorization) {
     return next();
@@ -13,34 +16,35 @@ module.exports = (secret) => (req, resp, next) => {
     return next();
   }
 
-  jwt.verify(token, secret, (err, decodedToken) => {
+  jwt.verify(token, secret, async (err, decodedToken) => {
+    const { uid } = decodedToken;
     if (err) {
+      console.log('hola mundo');
       return next(403);
     }
 
     // TODO: Verificar identidad del usuario usando `decodeToken.uid`
+    const getUserByUid = await user.findById(uid);
+    if (!getUserByUid) return next(404);
+    return next();
   });
 };
-
 
 module.exports.isAuthenticated = (req) => (
   // TODO: decidir por la informacion del request si la usuaria esta autenticada
   false
 );
 
-
 module.exports.isAdmin = (req) => (
   // TODO: decidir por la informacion del request si la usuaria es admin
   false
 );
-
 
 module.exports.requireAuth = (req, resp, next) => (
   (!module.exports.isAuthenticated(req))
     ? next(401)
     : next()
 );
-
 
 module.exports.requireAdmin = (req, resp, next) => (
   // eslint-disable-next-line no-nested-ternary
