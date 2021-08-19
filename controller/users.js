@@ -1,6 +1,6 @@
 const getUsers = (req, resp, next) => {
   resp.send('get all users');
-  next();
+  // next();
 };
 
 const createUsers = (req, resp, next) => {
