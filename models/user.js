@@ -1,7 +1,8 @@
+/* eslint-disable no-return-await */
 const mongoose = require('mongoose');
 
 const { Schema } = mongoose;
-// const bcrypt = require('bcrypt');
+const bcrypt = require('bcrypt');
 
 const userSchema = new Schema({
   email: {
@@ -19,21 +20,12 @@ const userSchema = new Schema({
   },
 });
 
-// fx que pre salva en la bd el objeto
-// hashea o encripta la contraseña antes de guardarla
-userSchema.pre('save', (next) => {
-  const user = this;
-  if (!user.isModified('password')) return next();
+userSchema.statics.encryptPassword = async (password) => {
+  const salt = await bcrypt.genSalt(10);
+  return await bcrypt.hash(password, salt);
+};
 
-  bcrypt.genSalt(10, (err, salt) => {
-    if (err) return next(err);
-
-    bcrypt.hash(user.password, salt, null, (err, hash) => {
-      if (err) return next(err);
-      user.password = hash;
-      next();
-    });
-  });
-});
+// eslint-disable-next-line max-len
+userSchema.statics.comparePassword = async (password, receivedPassword) => await bcrypt.compare(password, receivedPassword);
 
 module.exports = mongoose.model('User', userSchema);

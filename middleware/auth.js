@@ -19,25 +19,25 @@ module.exports = (secret) => async (req, resp, next) => {
   jwt.verify(token, secret, async (err, decodedToken) => {
     const { uid } = decodedToken;
     if (err) {
-      console.log('hola mundo');
       return next(403);
     }
 
     // TODO: Verificar identidad del usuario usando `decodeToken.uid`
     const getUserByUid = await user.findById(uid);
     if (!getUserByUid) return next(404);
+    req.authToken = getUserByUid;
     return next();
   });
 };
 
 module.exports.isAuthenticated = (req) => (
   // TODO: decidir por la informacion del request si la usuaria esta autenticada
-  false
+  req.authToken || false
 );
 
 module.exports.isAdmin = (req) => (
   // TODO: decidir por la informacion del request si la usuaria es admin
-  false
+  req.authToken.roles.admin || false
 );
 
 module.exports.requireAuth = (req, resp, next) => (
