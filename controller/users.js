@@ -1,11 +1,11 @@
-const getUsers = async(req, resp, next) => {
+const getUsers = async (req, resp, next) => {
   try {
-    const limit = parseInt(req.query.limit, 10)
+    const limit = parseInt(req.query.limit, 10);
     console.log(limit);
     console.log(req.query);
-    resp.status(200).send(`hola mundo`)
+    resp.status(200).send('hola mundo');
   } catch (error) {
-    
+
   }
   // next();
 };

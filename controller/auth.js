@@ -11,8 +11,9 @@ const signIn = async (req, resp, next) => {
     return next(400);
   }
 
+  // user.password
+  
   // TO DO: autenticar a la usuarix
-
   try {
     const userEmail = await User.findOne({
       email: req.body.email,
@@ -26,8 +27,6 @@ const signIn = async (req, resp, next) => {
     const validPassword = await bcrypt.compare(password, userEmail.password);
 
     if (!validPassword) return resp.status(400).json({ message: 'Invalid Email or Password.' });
-
-    // resp.status(200).json({ message: 'Email & password are valid.' })
 
     // Create a new token with email in the payload
     jwt.sign({

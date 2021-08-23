@@ -4,8 +4,6 @@ const user = require('../models/user');
 module.exports = (secret) => async (req, resp, next) => {
   const { authorization } = req.headers;
 
-  // console.log(authorization);s
-
   if (!authorization) {
     return next();
   }
@@ -17,26 +15,40 @@ module.exports = (secret) => async (req, resp, next) => {
   }
 
   jwt.verify(token, secret, async (err, decodedToken) => {
-    const { uid } = decodedToken;
     if (err) {
       return next(403);
     }
 
     // TODO: Verificar identidad del usuario usando `decodeToken.uid`
+    const { uid } = decodedToken;
     const getUserByUid = await user.findById(uid);
     if (!getUserByUid) return next(404);
     req.authToken = getUserByUid;
     return next();
+
+    // const userFind = User.findById(decodedToken.uid);
+
+    // userFind
+    //   .then((doc) => {
+    //     if (!doc) {
+    //       console.log(doc);
+    //       return next(404);
+    //     }
+    //     req.authToken = decodedToken;
+    //     return next();
+    //   })
+    //   .catch(() => next(403));
+
   });
 };
 
 module.exports.isAuthenticated = (req) => (
-  // TODO: decidir por la informacion del request si la usuaria esta autenticada
+  // TO DO: decidir por la informacion del request si la usuaria esta autenticada
   req.authToken || false
 );
 
 module.exports.isAdmin = (req) => (
-  // TODO: decidir por la informacion del request si la usuaria es admin
+  // TO DO: decidir por la informacion del request si la usuaria es admin
   req.authToken.roles.admin || false
 );
 
