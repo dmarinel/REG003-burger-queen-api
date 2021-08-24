@@ -65,6 +65,7 @@ const createTestUser = () => fetchAsAdmin('/users', {
     return fetch('/auth', { method: 'POST', body: __e2e.testUserCredentials });
   })
   .then((resp) => {
+    console.log(resp);
     if (resp.status !== 200) {
       throw new Error('Could not authenticate test user');
     }
@@ -109,7 +110,7 @@ module.exports = () => new Promise((resolve, reject) => {
   // TO DO: Configurar DB de tests
   mongodbsetUp().then(()=>{
     console.info('Starting local server...');
-    const child = spawn('npm', ['start', process.env.PORT || 8888], {
+    const child = spawn('node', ['index.js', process.env.PORT || 8888], {
       cwd: path.resolve(__dirname, '../'),
       stdio: ['ignore', 'pipe', 'pipe'],
     });

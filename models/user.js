@@ -1,4 +1,7 @@
-const { Schema, model } = require('mongoose');
+/* eslint-disable no-return-await */
+const mongoose = require('mongoose');
+
+const { Schema } = mongoose;
 const bcrypt = require('bcrypt');
 const uniqueValidator = require('mongoose-unique-validator');
 
@@ -22,6 +25,7 @@ const userSchema = new Schema({
 //   const user = this;
 //   if (!user.isModified('password')) return next();
 
+<<<<<<< HEAD
 //   bcrypt.hash(user.password, 10, (err, hash) => {
 //     if (err) return next(err);
 //     user.password = hash;
@@ -59,11 +63,17 @@ const userSchema = new Schema({
 userSchema.methods.encryptPassword = async (password) => {
   // cuantas veces quiero aplicar el algoritmo: 10 veces
   // termina de aplicar el método y me devuelve un salt 
+=======
+userSchema.statics.encryptPassword = async (password) => {
+>>>>>>> 5b638bc70ea216cb1b786cd3847984497e83b40a
   const salt = await bcrypt.genSalt(10);
-  // convertir el string del password y lo encripta
-  return bcrypt.hash(password, salt);
-}
+  return await bcrypt.hash(password, salt);
+};
 
+// eslint-disable-next-line max-len
+userSchema.statics.comparePassword = async (password, receivedPassword) => await bcrypt.compare(password, receivedPassword);
+
+<<<<<<< HEAD
 
 // elimina la key password del objeto que retorna al momento de crear un usuario
 userSchema.methods.toJSON = function() {
@@ -81,3 +91,6 @@ userSchema.plugin(uniqueValidator, {
 
 
 module.exports = model('User', userSchema);
+=======
+module.exports = mongoose.model('User', userSchema);
+>>>>>>> 5b638bc70ea216cb1b786cd3847984497e83b40a

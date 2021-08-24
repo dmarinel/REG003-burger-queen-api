@@ -22,7 +22,7 @@ module.exports = (secret) => async (req, resp, next) => {
     const { uid } = decodedToken;
     const getUserByUid = await user.findById(uid);
     if (!getUserByUid) return next(404);
-    console.log('authMiddleware línea 26', getUserByUid);
+    // console.log('authMiddleware línea 26', getUserByUid);
     req.authToken = getUserByUid
     return next();
   });
