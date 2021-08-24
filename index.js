@@ -15,7 +15,7 @@ mongoose
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
-  .then((db) => console.info('mongodb successfully connected'))
+  .then((db) => console.info('Mongodb successfully connected.'))
   .catch((err) => console.info(`Error al conectar a la base de datos: ${err}`));
 
 mongoose.set('useCreateIndex', true);
