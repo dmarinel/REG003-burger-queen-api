@@ -22,7 +22,7 @@ const initAdminUser = (app, next) => {
   const findUserByEmail = User.findOne({ email: adminEmail });
   findUserByEmail.then((docs) => {
     if (docs) {
-      console.log('doc:', docs);
+      // console.log('doc:', docs);
       console.log('This e-mail exists.');
       return next(200);
     }
@@ -32,7 +32,7 @@ const initAdminUser = (app, next) => {
     return newAdminUser.save();
   })
     .then((user)=>{
-      console.log('user:', user);
+      console.log('routes user:', user);
     })
     .catch((err) => {
       if (err !== 200) { console.log('There is a database problem.'); }
@@ -130,7 +130,6 @@ module.exports = (app, next) => {
    * @code {403} si ya existe usuaria con ese `email`
    */
   app.post('/users', requireAdmin, createUsers);
-  // app.post('/users', createUsers);
 
   /**
    * @name PUT /users
