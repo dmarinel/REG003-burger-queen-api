@@ -38,7 +38,7 @@ const signIn = async (req, resp, next) => {
           algorithm: 'HS256',
           expiresIn: 3000,
         }, (err, token) => {
-      console.log('auth controller:', err, token);
+      // console.log('auth controller:', err, token);
       if (err) console.error(err);
 
       return resp.status(200).json({ token });
