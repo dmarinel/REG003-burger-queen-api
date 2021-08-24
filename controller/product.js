@@ -41,7 +41,14 @@ const createProduct = (req, resp, next) => {
 
 //put
 const updateProduct = (req, resp, next) => {
-    
+  let productId = req.params.productId
+  let bodyUpdated = req.body
+  // son 2 argumentos, el 2do es un objeto con los campos que deseo actualizar
+  Product.findByIdAndUpdate(productId, bodyUpdated, (err, productUpdated) => {
+    if (err) resp.status(500).send({ message: `There is a mistake trying to update the product: ${err}` })
+
+    resp.status(200).send({ product: productUpdated })
+  })
 }
 
 //delete
