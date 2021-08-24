@@ -1,5 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const morgan = require('morgan');
 const config = require('./config');
 const authMiddleware = require('./middleware/auth');
 const errorHandler = require('./middleware/error');
@@ -24,10 +25,11 @@ app.set('config', config);
 app.set('pkg', pkg);
 
 // parse application/x-www-form-urlencoded
-// el servidor será capaz de entender los datos que le piden 
+// el servidor será capaz de entender los datos que le piden
 // a través de un form y convertirlo en un obj de JS
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
+app.use(morgan('dev'));
 app.use(authMiddleware(secret));
 
 // Registrar rutas

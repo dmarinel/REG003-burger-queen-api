@@ -35,6 +35,7 @@
     "jest": "^27.0.1",
     "jsdoc": "^3.6.6",
     "jsdoc-http-plugin": "^0.3.2",
+    "morgan": "^1.10.0",
     "node-fetch": "^2.6.1",
     "nodemon": "^2.0.12",
     "tree-kill": "^1.2.2"
