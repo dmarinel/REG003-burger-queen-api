@@ -1,5 +1,3 @@
-const { restart } = require('nodemon');
-const user = require('../models/user');
 const User = require('../models/user');
 
 const createUsers = async (req, resp, next) => {

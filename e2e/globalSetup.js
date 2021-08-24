@@ -111,7 +111,7 @@ module.exports = () => new Promise((resolve, reject) => {
 
   mongodbsetUp().then(()=>{
     console.info('Starting local server...');
-    const child = spawn('npm', ['start', process.env.PORT || 8888], {
+    const child = spawn('node', ['index.js', process.env.PORT || 8888], {
       cwd: path.resolve(__dirname, '../'),
       stdio: ['ignore', 'pipe', 'pipe'],
     });
