@@ -18,29 +18,13 @@ module.exports = (secret) => async (req, resp, next) => {
     if (err) {
       return next(403);
     }
-
-    // TODO: Verificar identidad del usuario usando `decodeToken.uid`
+    // TO DO: Verificar identidad del usuario usando `decodeToken.uid`
     const { uid } = decodedToken;
     const getUserByUid = await user.findById(uid);
     if (!getUserByUid) return next(404);
-    console.log('holi', getUserByUid);
+    console.log('authMiddleware línea 26', getUserByUid);
     req.authToken = getUserByUid
-    console.log('inspirada');
     return next();
-
-    // const userFind = User.findById(decodedToken.uid);
-
-    // userFind
-    //   .then((doc) => {
-    //     if (!doc) {
-    //       console.log(doc);
-    //       return next(404);
-    //     }
-    //     req.authToken = decodedToken;
-    //     return next();
-    //   })
-    //   .catch(() => next(403));
-
   });
 };
 
