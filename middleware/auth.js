@@ -23,29 +23,14 @@ module.exports = (secret) => async (req, resp, next) => {
     const { uid } = decodedToken;
     const getUserByUid = await user.findById(uid);
     if (!getUserByUid) return next(404);
-    console.log('holi', getUserByUid);
-    req.authToken = getUserByUid
-    console.log('inspirada');
+    req.authToken = getUserByUid;
     return next();
-
-    // const userFind = User.findById(decodedToken.uid);
-
-    // userFind
-    //   .then((doc) => {
-    //     if (!doc) {
-    //       console.log(doc);
-    //       return next(404);
-    //     }
-    //     req.authToken = decodedToken;
-    //     return next();
-    //   })
-    //   .catch(() => next(403));
-
   });
 };
 
 module.exports.isAuthenticated = (req) => (
   // TO DO: decidir por la informacion del request si la usuaria esta autenticada
+
   req.authToken || false
 );
 

@@ -1,4 +1,7 @@
-const { Schema, model } = require('mongoose');
+/* eslint-disable no-return-await */
+const mongoose = require('mongoose');
+
+const { Schema } = mongoose;
 const bcrypt = require('bcrypt');
 
 const userSchema = new Schema({
@@ -17,27 +20,12 @@ const userSchema = new Schema({
   },
 });
 
-// fx que pre salva en la bd el objeto
-// hashea o encripta la contraseña antes de guardarla
-userSchema.pre('save', function (next) {
-  const user = this;
-  if (!user.isModified('password')) return next();
-  bcrypt.genSalt(10, (err, salt) => {
-    if (err) return next(err);
-    bcrypt.hash(user.password, salt, null, (err, hash) => {
-      if (err) return next(err);
-      user.password = hash;
-      next();
-    });
-  });
-});
-
-userSchema.methods.encryptPassword = async (password) => {
-  // cuantas veces quiero aplicar el algoritmo: 10 veces
-  // termina de aplicar el método y me devuelve un salt 
+userSchema.statics.encryptPassword = async (password) => {
   const salt = await bcrypt.genSalt(10);
-  // convertir el string del password y lo encripta
-  return bcrypt.hash(password, salt);
-}
+  return await bcrypt.hash(password, salt);
+};
 
-module.exports = model('User', userSchema);
+// eslint-disable-next-line max-len
+userSchema.statics.comparePassword = async (password, receivedPassword) => await bcrypt.compare(password, receivedPassword);
+
+module.exports = mongoose.model('User', userSchema);

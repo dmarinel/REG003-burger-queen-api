@@ -1,34 +1,37 @@
-const bcrypt = require('bcrypt');
 const User = require('../models/user');
-const {  requireAuth,  requireAdmin } = require('../middleware/auth');
-const {  getUsers,  createUsers } = require('../controller/users');
+const { requireAuth, requireAdmin } = require('../middleware/auth');
+const { getUsers, createUsers } = require('../controller/users');
 
-const initAdminUser = (app, next) => {
+const initAdminUser = async (app, next) => {
   // traigo los datos del administrador que están en el archivo config.js
   const { adminEmail, adminPassword } = app.get('config');
   // console.log(!adminEmail, adminPassword);
   if (!adminEmail || !adminPassword) {
     return next();
   }
-  const adminUser = {
-    email: adminEmail,
-    password: bcrypt.hashSync(adminPassword, 10),
-    roles: { admin: true },
-  };
-  // TO DO: crear usuaria admin
-  const findUserByEmail = User.findOne({ email: adminEmail });
 
-  findUserByEmail.then((docs) => {
-    if (docs) {
+  // TO DO: crear usuaria admin
+  try {
+    const findUserByEmail = await User.findOne({ email: adminEmail });
+
+    if (findUserByEmail) {
       console.log('This e-mail exists.');
       return next(200);
     }
-    // método del modelo mongoose para guardarlo en la BD
-    User.create(adminUser);
-  })
-    .catch((err) => {
-      if (err !== 200) { console.log('There is a database problem'); }
+    // Crear nuevo usuario
+    const user = await new User({
+      email: adminEmail,
+      password: adminPassword,
+      roles: { admin: true },
     });
+
+    user.password = await User.encryptPassword(user.password);
+
+    user.save();
+  } catch (err) {
+    if (err !== 200) { console.log('There is a database problem'); }
+  }
+
   next();
 };
 
