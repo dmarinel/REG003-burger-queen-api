@@ -8,6 +8,14 @@ const getProducts = (req, resp, next) => {
 
 const getProductId = (req, resp, next) => {
     const productId = req.params.productId
+
+    Product.findById(productId, (err, product) => {
+      if (err) return resp.status(500).send({ message: `Error with product findById: ${err}`})
+      if (!product) return resp.status(404).send({ message: `The product doesn't exist.` })
+
+      resp.status(200).send({ product })
+
+    })
 }
 
 //post
