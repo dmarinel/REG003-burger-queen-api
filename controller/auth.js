@@ -20,7 +20,7 @@ const signIn = async (req, resp, next) => {
     });
 
     if (!userEmail) {
-      return resp.status(400).json({
+      return resp.status(404).json({
         message: 'This user does not exist!',
       });
     }
