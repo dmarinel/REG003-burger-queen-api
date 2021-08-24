@@ -6,7 +6,7 @@ const getProducts = (req, resp, next) => {
   resp.status(404).send('Sorry cant find that!');
 }
 
-const getProductById = (req, resp, next) => {
+const getProductId = (req, resp, next) => {
     const productId = req.params.productId
 }
 
@@ -41,7 +41,7 @@ const deleteProduct = (req, resp, next) => {
 
 module.exports = {
     getProducts,
-    getProductById,
+    getProductId,
     createProduct,
     updateProduct,
     deleteProduct

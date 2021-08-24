@@ -1,4 +1,4 @@
-const { getProductById, createProduct, updateProduct, deleteProduct } = require('../controller/product');
+const { getProductId, createProduct, updateProduct, deleteProduct } = require('../controller/product');
 const {
   requireAuth,
   requireAdmin,
@@ -48,7 +48,7 @@ module.exports = (app, nextMain) => {
    * @code {401} si no hay cabecera de autenticación
    * @code {404} si el producto con `productId` indicado no existe
    */
-  app.get('/products/:productId', requireAuth, getProductById);
+  app.get('/products/:productId', requireAuth, getProductId);
 
   /**
    * @name POST /products
