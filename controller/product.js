@@ -2,10 +2,15 @@ const Product = require('../models/product')
 
 //get
 const getProducts = (req, resp, next) => {
-  resp.send(200, {products: []})
-  resp.status(404).send('Sorry cant find that!');
+  Product.find({}, (err, products) => {
+    if (err) return resp.status(500).send({ message: `Error with product findById: ${err}`})
+    if (!products) return res.status(404).send({ message: `There are not products.` })
+    resp.send(200, { products })
+  })
+  
 }
 
+// get by Id 
 const getProductId = (req, resp, next) => {
     const productId = req.params.productId
 
