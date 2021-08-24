@@ -2,8 +2,13 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const orderSchema = new Schema ({
-    userId: String,
-    client: String,
+    userId: { 
+      type: String,
+      require: true
+    },
+    client: {
+      type: String,
+    },
     products: [{
         qty: { type: Number, },
         product: { type: mongoose.ObjectId, },
