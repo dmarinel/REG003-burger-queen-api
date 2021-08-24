@@ -3,11 +3,11 @@ const Product = require('../models/product')
 //get
 const getProducts = (req, resp, next) => {
   resp.send(200, {products: []})
-  res.status(404).send('Sorry cant find that!');
+  resp.status(404).send('Sorry cant find that!');
 }
 
 const getProductById = (req, resp, next) => {
-    
+    const productId = req.params.productId
 }
 
 //post
