@@ -12,7 +12,7 @@ const getProducts = (req, resp, next) => {
 
 // get by Id 
 const getProductId = (req, resp, next) => {
-    const productId = req.params.productId
+    let productId = req.params.productId
 
     Product.findById(productId, (err, product) => {
       if (err) return resp.status(500).send({ message: `Error with product findById: ${err}`})
@@ -25,9 +25,6 @@ const getProductId = (req, resp, next) => {
 
 //post
 const createProduct = (req, resp, next) => {
-  console.log('POST PRODUCT');  
-  console.log(req.body);
-  
   let product = {
     name : req.body.name,
     price : req.body.price,
@@ -37,8 +34,8 @@ const createProduct = (req, resp, next) => {
   }
   
   Product.create(product, (err, productStored) => { //cuando se almacene, mongodb le adiciona un id
-    if (err) resp.status(500).send({message: `Oppss... There is an error in the data base: ${err}`})
-    else { resp.status(200).send({ product: productStored })}
+    if (err) resp.status(400).send({message: `Oppss... There is an error in the data base: ${err}`})
+    return resp.status(200).send({ product: productStored })
   }) 
 }
 
@@ -49,7 +46,16 @@ const updateProduct = (req, resp, next) => {
 
 //delete
 const deleteProduct = (req, resp, next) => {
+  let productId = req.params.productId
+
+  Product.findById(productId, (err, product) => {
+    if (err) resp.status(500).send({ message: `There is a mistake trying to delete the product: ${err}` })
     
+    product.remove(err => {
+      if (err) resp.status(500).send({ message: `There is a mistake trying to delete the product: ${err}` })
+      resp.status(200).send({ message: 'The product has been removed succesfully.' })
+    })
+  })
 }
 
 module.exports = {
