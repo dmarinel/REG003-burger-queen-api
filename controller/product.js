@@ -30,12 +30,16 @@ const createProduct = (req, resp, next) => {
     price : req.body.price,
     image : req.body.image,
     type : req.body.type,
-    dateEntry : Date.parse(req.body.dateEntry)
+    dateEntry : new Date()
   }
   
   Product.create(product, (err, productStored) => { //cuando se almacene, mongodb le adiciona un id
-    if (err) resp.status(400).send({message: `Oppss... There is an error in the data base: ${err}`})
-    return resp.status(200).send({ product: productStored })
+    console.log(product);
+    if (err) { 
+      console.log(err);
+      return resp.status(400).send({message: `Oppss... There is an error in the data base: ${err}`}) 
+    }
+    resp.status(200).send( productStored )
   }) 
 }
 
