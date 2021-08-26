@@ -13,7 +13,6 @@ const getProducts = (req, resp, next) => {
 const getProductId = (req, resp, next) => {
     let productId = req.params.productId
     Product.findById(productId, (err, product) => {
-      console.log('línea 18', err);
       //console.log('20:', isObjectId(productId));
       if (!product) return resp.status(404).send({ message: `The product doesn't exist.` })
       else if (productId.match(/^[0-9a-fA-F]{24}$/)) {
@@ -23,7 +22,7 @@ const getProductId = (req, resp, next) => {
 }
 
 //post
-const createProduct = async (req, resp, next) => {
+const createProduct = (req, resp, next) => {
   let product = {
     name : req.body.name,
     price : req.body.price,
@@ -42,11 +41,14 @@ const createProduct = async (req, resp, next) => {
 const updateProduct = (req, resp, next) => {
   let productId = req.params.productId
   let bodyUpdated = req.body
+  let price = req.body.price
+  
   // son 2 argumentos, el 2do es un objeto con los campos que deseo actualizar
   Product.findByIdAndUpdate(productId, bodyUpdated, (err, productUpdated) => {
-    if (err) resp.status(500).send({ message: `There is a mistake trying to update the product: ${err}` })
-
-    resp.status(200).send({ product: productUpdated })
+    if (typeof price !== 'number') return next(400)
+    if (err) return resp.status(404).send({ message: `There is a mistake trying to update the product: ${err}` })
+    
+    resp.status(200).send( productUpdated )
   })
 }
 
