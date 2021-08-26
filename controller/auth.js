@@ -38,7 +38,7 @@ const signIn = async (req, resp, next) => {
         }, (err, token) => {
       //console.log('auth controller 39:', err, token);
       if (err) console.error(err);
-      console.log('línea 41 auth controller', err);
+      // console.log('línea 41 auth controller', err);
       return resp.json({ token });
     });
   } catch (error) {
