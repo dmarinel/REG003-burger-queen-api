@@ -8,8 +8,10 @@ const userSchema = new Schema({
   email: {
     type: String,
     unique: true,
-    lowercase: true,
-    require: [true, 'Email is required'],
+    maxlength: [100, 'The email can not exceed 100 characters'],
+    trim: true,
+    match: [/.+\@.+\..+/, 'Please enter a valid e-mail'],
+    required: [true, 'Email is required'],
   },
   password: {
     type: String,

@@ -12,15 +12,13 @@ const signIn = async (req, resp, next) => {
   }
 
   // user.password
-  
+
   // TO DO: autenticar a la usuarix
   try {
-    const userEmail = await User.findOne({
-      email: req.body.email,
-    });
+    const userEmail = await User.findOne({ email });
 
     if (!userEmail) {
-      return resp.status(400).json({
+      return resp.status(404).json({
         message: 'This user does not exist!',
       });
     }
@@ -38,11 +36,11 @@ const signIn = async (req, resp, next) => {
       algorithm: 'HS256',
       expiresIn: 3000,
     }, (err, token) => {
-      if (err) console.error(err);
-      return resp.status(200).json({ token });
+      if (err) resp.status(500).json({ erro: 'failed to authenticate token' });
+      return resp.json({ token });
     });
   } catch (error) {
-    console.log(error);
+    return next(500);
   }
 
   // next();
