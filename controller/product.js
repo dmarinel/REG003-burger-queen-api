@@ -24,7 +24,7 @@ const getProductId = (req, resp, next) => {
 }
 
 //post
-const createProduct = (req, resp, next) => {
+const createProduct = async (req, resp, next) => {
   let product = {
     name : req.body.name,
     price : req.body.price,
@@ -32,14 +32,10 @@ const createProduct = (req, resp, next) => {
     type : req.body.type,
     dateEntry : new Date()
   }
-  
+
   Product.create(product, (err, productStored) => { //cuando se almacene, mongodb le adiciona un id
-    console.log(product);
-    if (err) { 
-      console.log(err);
-      return resp.status(400).send({message: `Oppss... There is an error in the data base: ${err}`}) 
-    }
-    resp.status(200).send( productStored )
+    if (Object.entries(req.body).length === 0) return next(400);
+    else { resp.status(200).send( productStored ) }
   }) 
 }
 
