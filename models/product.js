@@ -6,14 +6,20 @@ const productSchema = new Schema ({
         type: String,
         require: [true, 'Name is required.'],
     },
-    price: { type: Number, default: 0 },
+    price: { 
+        type: Number, 
+        default: 0 
+    },
     image: String,
     type: { 
         type: String, 
         enum: ['drink', 'burger', 'side dishes'],
         require: [true, 'Name is required.']
     },
-    dateEntry: { type: Date }
+    dateEntry: { 
+        type: Date,
+        default: Date.now
+    }
 })
 
 module.exports = mongoose.model('Product', productSchema)
