@@ -5,7 +5,7 @@ const getProducts = (req, resp, next) => {
   Product.find({}, (err, products) => {
     if (err) return resp.status(500).send({ message: `Error with product findById: ${err}`})
     if (!products) return res.status(404).send({ message: `There are not products.` })
-    resp.send(200, { products })
+    resp.send(200, products )
   })
   
 }
