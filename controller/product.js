@@ -7,19 +7,18 @@ const getProducts = (req, resp, next) => {
     if (!products) return res.status(404).send({ message: `There are not products.` })
     resp.send(200, products )
   })
-  
 }
 
 // get by Id 
 const getProductId = (req, resp, next) => {
     let productId = req.params.productId
-
     Product.findById(productId, (err, product) => {
-      if (err) return resp.status(500).send({ message: `Error with product findById: ${err}`})
+      console.log('línea 18', err);
+      //console.log('20:', isObjectId(productId));
       if (!product) return resp.status(404).send({ message: `The product doesn't exist.` })
-
-      resp.status(200).send({ product })
-
+      else if (productId.match(/^[0-9a-fA-F]{24}$/)) {
+        resp.status(200).send( product ) 
+      } 
     })
 }
 
@@ -32,9 +31,9 @@ const createProduct = async (req, resp, next) => {
     type : req.body.type,
     dateEntry : new Date()
   }
-
+  if (Object.entries(req.body).length === 0) return next(400);
   Product.create(product, (err, productStored) => { //cuando se almacene, mongodb le adiciona un id
-    if (Object.entries(req.body).length === 0) return next(400);
+    if (err) return next(err);
     else { resp.status(200).send( productStored ) }
   }) 
 }
