@@ -1,5 +1,6 @@
 /* eslint-disable no-return-await */
 const mongoose = require('mongoose');
+const mongoosePaginate = require('mongoose-paginate-v2');
 
 const { Schema } = mongoose;
 const bcrypt = require('bcrypt');
@@ -20,6 +21,9 @@ const userSchema = new Schema({
   roles: {
     admin: { type: Boolean },
   },
+}, {
+  timestamps: true,
+  versionKey: false,
 });
 
 userSchema.statics.encryptPassword = async (password) => {
@@ -29,5 +33,7 @@ userSchema.statics.encryptPassword = async (password) => {
 
 // eslint-disable-next-line max-len
 userSchema.statics.comparePassword = async (password, receivedPassword) => await bcrypt.compare(password, receivedPassword);
+
+userSchema.plugin(mongoosePaginate);
 
 module.exports = mongoose.model('User', userSchema);

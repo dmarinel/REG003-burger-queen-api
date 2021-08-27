@@ -1,5 +1,5 @@
 const User = require('../models/user');
-const { isValidEmail, isWeakPassword } = require('../utils/utils');
+const { isValidEmail, isWeakPassword, pagination } = require('../utils/utils');
 
 const createUsers = async (req, resp, next) => {
   try {
@@ -33,24 +33,30 @@ const createUsers = async (req, resp, next) => {
 
     return resp.json(newUser);
   } catch (error) {
-    if (error) next(500);
+    if (error) next(error);
   }
 };
 
 const getUsers = async (req, resp, next) => {
   try {
-    const limit = parseInt(req.query.limit, 10);
-    console.log(limit);
-    console.log(req.query);
-    resp.status(200).send('hola mundo');
+    const options = {
+      page: parseInt(req.query.page, 10) || 1,
+      limit: parseInt(req.query.limit, 10) || 10,
+    };
+
+    const users = await User.paginate({}, options);
+    const url = `${req.protocol}://${req.get('host') + req.path}`;
+
+    const links = pagination(users, url, options.page, options.limit, users.totalPages);
+
+    resp.links(links);
+    return resp.json(users);
   } catch (error) {
-    return next(500);
+    resp.next(error);
   }
-  // next();
 };
 
 module.exports = {
   getUsers,
   createUsers,
 };
-
