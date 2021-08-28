@@ -26,7 +26,7 @@ const initAdminUser = async (app, next) => {
     });
 
     user.password = await User.encryptPassword(user.password);
-
+    
     user.save();
   } catch (err) {
     if (err !== 200) { console.log('There is a database problem'); }
