@@ -22,6 +22,18 @@ const userSchema = new Schema({
   },
 });
 
+userSchema.pre('save', async function (next) {
+  const user = this;
+  if(!user.isModified('password')) return next()
+
+  bcrypt.hash(user.password, 10, (err, passwordHash) => {
+    err & next(err)
+    user.password = passwordHash;
+    next()
+  })
+})
+
+
 userSchema.statics.encryptPassword = async (password) => {
   // cuantas veces quiero aplicar el algoritmo: 10 veces
   // termina de aplicar el método y me devuelve un salt 
