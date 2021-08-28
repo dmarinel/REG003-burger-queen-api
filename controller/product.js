@@ -47,8 +47,7 @@ const updateProduct = (req, resp, next) => {
   Product.findByIdAndUpdate(productId, bodyUpdated, (err, productUpdated) => {
     if (typeof price !== 'number') return next(400)
     if (err) return resp.status(404).send({ message: `There is a mistake trying to update the product: ${err}` })
-    
-    resp.status(200).send( productUpdated )
+    resp.status(200).send( bodyUpdated )
   })
 }
 
