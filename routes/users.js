@@ -1,6 +1,6 @@
-const User = require('../models/user');
 const { requireAuth, requireAdmin } = require('../middleware/auth');
 const { getUsers, createUsers } = require('../controller/users');
+const User = require('../models/user');
 
 const initAdminUser = async (app, next) => {
   // traigo los datos del administrador que están en el archivo config.js
@@ -26,7 +26,7 @@ const initAdminUser = async (app, next) => {
     });
 
     user.password = await User.encryptPassword(user.password);
-
+    
     user.save();
   } catch (err) {
     if (err !== 200) { console.log('There is a database problem'); }
@@ -125,7 +125,6 @@ module.exports = (app, next) => {
    * @code {403} si ya existe usuaria con ese `email`
    */
   app.post('/users', requireAdmin, createUsers);
-  // app.post('/users', createUsers);
 
   /**
    * @name PUT /users

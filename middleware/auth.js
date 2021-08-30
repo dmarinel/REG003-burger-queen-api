@@ -18,19 +18,18 @@ module.exports = (secret) => async (req, resp, next) => {
     if (err) {
       return next(403);
     }
-
-    // TODO: Verificar identidad del usuario usando `decodeToken.uid`
+    // TO DO: Verificar identidad del usuario usando `decodeToken.uid`
     const { uid } = decodedToken;
     const getUserByUid = await user.findById(uid);
     if (!getUserByUid) return next(404);
-    req.authToken = getUserByUid;
+    // console.log('authMiddleware línea 26', getUserByUid);
+    req.authToken = getUserByUid
     return next();
   });
 };
 
 module.exports.isAuthenticated = (req) => (
   // TO DO: decidir por la informacion del request si la usuaria esta autenticada
-
   req.authToken || false
 );
 

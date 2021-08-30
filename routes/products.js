@@ -1,4 +1,10 @@
-const { createProduct } = require('../controller/product');
+const { 
+  getProductId, 
+  createProduct, 
+  updateProduct, 
+  deleteProduct, 
+  getProducts } = require('../controller/product');
+
 const {
   requireAuth,
   requireAdmin,
@@ -28,9 +34,8 @@ module.exports = (app, nextMain) => {
    * @code {200} si la autenticación es correcta
    * @code {401} si no hay cabecera de autenticación
    */
-  app.get('/products',  (req, resp, next) => {
-  });
-  //requireAuth,
+  app.get('/products', requireAuth, getProducts);
+  
   /**
    * @name GET /products/:productId
    * @description Obtiene los datos de un producto especifico
@@ -48,10 +53,7 @@ module.exports = (app, nextMain) => {
    * @code {401} si no hay cabecera de autenticación
    * @code {404} si el producto con `productId` indicado no existe
    */
-  app.get('/products/:productId',  (req, resp, next) => {
-    // requireAuth,
-    // fx getProductById
-  });
+  app.get('/products/:productId', requireAuth, getProductId);
 
   /**
    * @name POST /products
@@ -75,8 +77,8 @@ module.exports = (app, nextMain) => {
    * @code {403} si no es admin
    * @code {404} si el producto con `productId` indicado no existe
    */
-  app.post('/products',  createProduct);
-    // requireAdmin,
+  app.post('/products', requireAdmin, createProduct);
+    
   /**
    * @name PUT /products
    * @description Modifica un producto
@@ -100,10 +102,7 @@ module.exports = (app, nextMain) => {
    * @code {403} si no es admin
    * @code {404} si el producto con `productId` indicado no existe
    */
-  app.put('/products/:productId',  (req, resp, next) => {
-    // requireAdmin,
-    // fx updateProduct
-  });
+  app.put('/products/:productId', requireAdmin, updateProduct);
 
   /**
    * @name DELETE /products
@@ -123,10 +122,7 @@ module.exports = (app, nextMain) => {
    * @code {403} si no es ni admin
    * @code {404} si el producto con `productId` indicado no existe
    */
-  app.delete('/products/:productId',  (req, resp, next) => {
-    // requireAdmin,
-    // fx deleteProduct
-  });
+  app.delete('/products/:productId', requireAdmin, deleteProduct);
 
   nextMain();
 };

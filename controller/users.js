@@ -6,6 +6,7 @@ const createUsers = async (req, resp, next) => {
     const { email, password } = req.body;
 
     if (!email || !password) return next(400);
+
     if (!isValidEmail(email)) {
       return resp.status(400).json(
         {
@@ -14,11 +15,12 @@ const createUsers = async (req, resp, next) => {
         },
       );
     }
-    if (!isWeakPassword(password)) {
+
+    if (isWeakPassword(password)) {
       return resp.status(400).json(
         {
           statusCode: 400,
-          message: 'your password needs 8 characters, at least one lowercase letter and one number',
+          message: 'your password needs 8 characters',
         },
       );
     }
@@ -31,7 +33,11 @@ const createUsers = async (req, resp, next) => {
     newUser.password = await User.encryptPassword(newUser.password);
     newUser.save();
 
-    return resp.json(newUser);
+    // const { _id, email } = newUser;
+
+    const getUser = await User.findOne({ _id: newUser._id }).select('-password');
+    console.log(getUser);
+    return resp.json(getUser);
   } catch (error) {
     if (error) next(error);
   }
@@ -50,13 +56,21 @@ const getUsers = async (req, resp, next) => {
     const links = pagination(users, url, options.page, options.limit, users.totalPages);
 
     resp.links(links);
-    return resp.json(users);
+    return resp.json(users.docs);
   } catch (error) {
     resp.next(error);
+  }
+};
+const getUserByUidOrEmail = async(req, res, next) => {
+  try {
+    
+  } catch (error) {
+    
   }
 };
 
 module.exports = {
   getUsers,
   createUsers,
+  getUserByUidOrEmail,
 };

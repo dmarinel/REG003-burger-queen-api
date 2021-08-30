@@ -77,6 +77,7 @@ const checkAdminCredentials = () => fetch('/auth', {
   body: __e2e.adminUserCredentials,
 })
   .then((resp) => {
+    // console.log('línea 80:', resp);
     if (resp.status !== 200) {
       throw new Error('Could not authenticate as admin user');
     }
@@ -88,7 +89,6 @@ const waitForServerToBeReady = (retries = 10) => new Promise((resolve, reject) =
   if (!retries) {
     return reject(new Error('Server took to long to start'));
   }
-
   setTimeout(() => {
     fetch('/')
       .then((resp) => (
@@ -107,7 +107,6 @@ module.exports = () => new Promise((resolve, reject) => {
   }
 
   // TO DO: Configurar DB de tests
-
   mongodbsetUp().then(()=>{
     console.info('Starting local server...');
     const child = spawn('node', ['index.js', process.env.PORT || 8888], {
