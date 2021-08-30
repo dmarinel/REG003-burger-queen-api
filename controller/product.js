@@ -52,17 +52,15 @@ const updateProduct = (req, resp, next) => {
 }
 
 //delete
-const deleteProduct = (req, resp, next) => {
+const deleteProduct = async (req, resp, next) => {
   let productId = req.params.productId
+  try {
+    const deleted = await Product.findByIdAndDelete(productId)  
+    resp.status(200).send({ message: `The product ${deleted} has been removed succesfully.` })
+  } catch (err) {
+    if (err) resp.status(404).send({ message: `There is a mistake trying to delete the product: ${err}` }) 
+  }
 
-  Product.findById(productId, (err, product) => {
-    if (err) resp.status(500).send({ message: `There is a mistake trying to delete the product: ${err}` })
-    
-    product.remove(err => {
-      if (err) resp.status(500).send({ message: `There is a mistake trying to delete the product: ${err}` })
-      resp.status(200).send({ message: 'The product has been removed succesfully.' })
-    })
-  })
 }
 
 module.exports = {
