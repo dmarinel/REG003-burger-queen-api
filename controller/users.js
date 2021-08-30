@@ -33,11 +33,7 @@ const createUsers = async (req, resp, next) => {
     newUser.password = await User.encryptPassword(newUser.password);
     newUser.save();
 
-    // const { _id, email } = newUser;
-
-    const getUser = await User.findOne({ _id: newUser._id }).select('-password');
-    console.log(getUser);
-    return resp.json(getUser);
+    return resp.json(newUser);
   } catch (error) {
     if (error) next(error);
   }
@@ -61,16 +57,15 @@ const getUsers = async (req, resp, next) => {
     resp.next(error);
   }
 };
-const getUserByUidOrEmail = async(req, res, next) => {
-  try {
-    
-  } catch (error) {
-    
-  }
-};
+// const getUserByUidOrEmail = async(req, res, next) => {
+//   try {
+
+//   } catch (error) {
+
+//   }
+// };
 
 module.exports = {
   getUsers,
   createUsers,
-  getUserByUidOrEmail,
 };

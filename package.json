@@ -9,7 +9,7 @@
   "scripts": {
     "pretest": "eslint .",
     "start": "node index.js",
-    "test:e2e": "jest --verbose --testPathPattern e2e/users.spec.js --globalSetup ./e2e/globalSetup --globalTeardown ./e2e/globalTeardown --runInBand",
+    "test:e2e": "jest --verbose --testPathPattern e2e/users.spec.js  --globalSetup ./e2e/globalSetup --globalTeardown ./e2e/globalTeardown --runInBand",
     "test:unit": "jest --verbose --testPathIgnorePatterns e2e",
     "test": "npm run test:e2e && npm run test:unit",
     "lint": "eslint .",
@@ -24,11 +24,8 @@
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.13.5",
-<<<<<<< HEAD
     "mongoose-paginate-v2": "^1.4.2",
-=======
     "mongoose-unique-validator": "^2.0.3",
->>>>>>> 96439dc80f1d15e02f4b0ab355fc97d9dc87e011
     "supertest": "^6.1.4"
   },
   "devDependencies": {
