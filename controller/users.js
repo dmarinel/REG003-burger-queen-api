@@ -66,11 +66,13 @@ const getUserByUidOrEmail = async (req, res, next) => {
     const data = validateParams(uid);
 
     if (data === undefined) return next(400);
-    if (!isAdmin(req)) return next(403);
-
     const findParams = await User.findOne(data);
-
     if (!findParams) return next(404);
+
+    // eslint-disable-next-line no-underscore-dangle
+    // eslint-disable-next-line max-len
+    if (!isAdmin(req) && req.authToken._id.toString() !== findParams._id.toString()) return next(403);
+    
     res.json(findParams);
   } catch (err) {
     return next(err);
@@ -87,9 +89,6 @@ const updateUser = async (req, res, next) => {
     if (!isAdmin(req)) return next(403);
     const findUid = await User.findOne(filter);
     if (!findUid) return next(404);
-
-    
-    
 
     console.log('update');
     console.log(updateData);
