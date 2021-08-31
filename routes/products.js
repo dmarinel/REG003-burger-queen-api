@@ -3,7 +3,7 @@ const {
   createProduct, 
   updateProduct, 
   deleteProduct, 
-  getProducts } = require('../controller/product');
+  getProducts } = require('../controller/products');
 
 const {
   requireAuth,
