@@ -48,7 +48,7 @@ userSchema.statics.encryptPassword = async (password) => {
 // eslint-disable-next-line max-len
 userSchema.statics.comparePassword = async (password, receivedPassword) => await bcrypt.compare(password, receivedPassword);
 
-//I do not understand thi part
+// I do not understand this part
 userSchema.methods.toJSON = function () {
   const { __v, password, ...newUser } = this.toObject();
   return newUser;

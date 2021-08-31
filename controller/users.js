@@ -1,5 +1,8 @@
+const { isAdmin } = require('../middleware/auth');
 const User = require('../models/user');
-const { isValidEmail, isWeakPassword, pagination } = require('../utils/utils');
+const {
+  isValidEmail, isWeakPassword, pagination, validateParams,
+} = require('../utils/utils');
 
 const createUsers = async (req, resp, next) => {
   try {
@@ -57,15 +60,48 @@ const getUsers = async (req, resp, next) => {
     resp.next(error);
   }
 };
-// const getUserByUidOrEmail = async(req, res, next) => {
-//   try {
+const getUserByUidOrEmail = async (req, res, next) => {
+  try {
+    const { uid } = req.params;
+    const data = validateParams(uid);
 
-//   } catch (error) {
+    if (data === undefined) return next(400);
+    if (!isAdmin(req)) return next(403);
 
-//   }
-// };
+    const findParams = await User.findOne(data);
+
+    if (!findParams) return next(404);
+    res.json(findParams);
+  } catch (err) {
+    return next(err);
+  }
+};
+
+const updateUser = async (req, res, next) => {
+  try {
+    const { uid } = req.params;
+    const { body } = req;
+    console.log(body);
+    const filter = validateParams(uid);
+    if (filter === undefined) return next(400);
+    if (!isAdmin(req)) return next(403);
+    const findUid = await User.findOne(filter);
+    if (!findUid) return next(404);
+
+    
+    
+
+    console.log('update');
+    console.log(updateData);
+    return res.send(updateData);
+  } catch (error) {
+    return next(error);
+  }
+};
 
 module.exports = {
   getUsers,
   createUsers,
+  getUserByUidOrEmail,
+  updateUser,
 };

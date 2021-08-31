@@ -52,3 +52,12 @@ module.exports.requireAdmin = (req, resp, next) => (
       ? next(403)
       : next()
 );
+
+module.exports.requireLogin = (req, resp, next) => (
+  // eslint-disable-next-line no-nested-ternary
+  (!module.exports.isAuthenticated(req))
+    ? next(401)
+    : (!module.exports.isAdmin(req))
+      ? next()
+      : next()
+);

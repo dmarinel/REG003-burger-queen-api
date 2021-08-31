@@ -18,8 +18,21 @@ const pagination = (getUser, url, page, limit, totalPages) => {
   return linkHeader;
 };
 
+const validateParams = (params) => {
+  const regExpUidMongo = new RegExp('^[0-9a-fA-F]{24}$');
+  const isValidUid = regExpUidMongo.test(params);
+
+  if (isValidUid) {
+    return { _id: params };
+  }
+  if (isValidEmail(params)) {
+    return { email: params };
+  }
+};
+
 module.exports = {
   isValidEmail,
   isWeakPassword,
   pagination,
+  validateParams,
 };
