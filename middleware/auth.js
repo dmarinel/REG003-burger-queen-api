@@ -23,7 +23,7 @@ module.exports = (secret) => async (req, resp, next) => {
     const getUserByUid = await user.findById(uid);
     if (!getUserByUid) return next(404);
     // console.log('authMiddleware línea 26', getUserByUid);
-    req.authToken = getUserByUid
+    req.authToken = getUserByUid;
     return next();
   });
 };
@@ -50,5 +50,14 @@ module.exports.requireAdmin = (req, resp, next) => (
     ? next(401)
     : (!module.exports.isAdmin(req))
       ? next(403)
+      : next()
+);
+
+module.exports.requireLogin = (req, resp, next) => (
+  // eslint-disable-next-line no-nested-ternary
+  (!module.exports.isAuthenticated(req))
+    ? next(401)
+    : (!module.exports.isAdmin(req))
+      ? next()
       : next()
 );

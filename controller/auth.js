@@ -10,9 +10,11 @@ const signIn = async (req, resp, next) => {
   if (!email || !password) {
     return next(400);
   }
+
   // TO DO: autenticar a la usuarix
   try {
     const userEmail = await User.findOne({ email });
+
     if (!userEmail) {
       return resp.status(404).json({
         message: 'This user does not exist!',
@@ -23,19 +25,19 @@ const signIn = async (req, resp, next) => {
 
     // Create a new token with email in the payload
     jwt.sign({
-        // eslint-disable-next-line no-underscore-dangle
-        uid: userEmail._id,
-        email: userEmail.email,
-        roles: userEmail.roles,
-        }, secret, {
-          algorithm: 'HS256',
-          expiresIn: 3000,
-        }, (err, token) => {
-      if (err) console.error(err);
+      // eslint-disable-next-line no-underscore-dangle
+      uid: userEmail._id,
+      email: userEmail.email,
+      roles: userEmail.roles,
+    }, secret, {
+      algorithm: 'HS256',
+      expiresIn: 3000,
+    }, (err, token) => {
+      if (err) resp.next(err);
       return resp.json({ token });
     });
   } catch (error) {
-    console.log('línea 46',error);
+    return next(error);
   }
 
   // next();

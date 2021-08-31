@@ -1,8 +1,6 @@
 const config = require('../config');
 
-
 const { fetch, fetchWithAuth } = process;
-
 
 describe('POST /auth', () => {
   it('should respond with 400 when email and password missing', () => (
@@ -40,6 +38,7 @@ describe('POST /auth', () => {
       body: { email: config.adminEmail, password: config.adminPassword },
     })
       .then((resp) => {
+        console.log(resp.status);
         expect(resp.status).toBe(200);
         return resp.json();
       })
