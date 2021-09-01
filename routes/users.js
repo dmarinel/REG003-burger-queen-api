@@ -102,7 +102,7 @@ module.exports = (app, next) => {
    * @code {403} si no es ni admin o la misma usuaria
    * @code {404} si la usuaria solicitada no existe
    */
-  app.get('/users/:uid', requireAuth, requireLogin, getUserByUidOrEmail);
+  app.get('/users/:uid', requireAuth, getUserByUidOrEmail);
 
   /**
    * @name POST /users
