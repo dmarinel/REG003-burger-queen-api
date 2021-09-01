@@ -20,23 +20,35 @@ const getOrderId = (req, resp, next) => {
 }
 
 // post
-const createOrder = (req, resp, next) => {
-    let order = {
-        userId: req.body.userId,
-        client: req.body.client,
-        products: req.body.products,
-    }
-    console.log('32:', order);
-    console.log('33:', req.body);
-    
-    console.log('36:', req.body.products);
-    
-    if (order.products.length === 0 || !order.products) return next(400);
-    
-    Order.create(order, (err, orderStored) => { //cuando se almacene, mongodb le adiciona un id
-        if (err) return next(err);
-        else { resp.status(200).send( orderStored ) }
-    }) 
+const createOrder = async (req, resp, next) => {
+    // 1hora:09 min video: https://www.youtube.com/watch?v=-bI0diefasA 
+    const {
+        userId,
+        client,
+        products
+    } = req.body
+
+    try {
+        if (Object.keys(req.body).length === 0 || req.body.products.length === 0) return next(400);
+
+        // 1hora:22 min video: https://www.youtube.com/watch?v=-bI0diefasA 
+        const newOrder = await new Order({
+            userId,
+            client,
+            products: products.map((product)=>({
+                qty: product.qty,
+                product: product.productId
+            }))
+        });
+        console.log('43:', newOrder.products);
+        const saveOrder = newOrder(newOrder)
+        saveOrder.save();
+        console.log(saveOrder);
+        return resp.status(200).send( saveOrder )
+
+    } catch (err) {
+        next(err);
+    }    
 }
 
 // put
