@@ -72,7 +72,6 @@ const getUserByUidOrEmail = async (req, res, next) => {
     // eslint-disable-next-line no-underscore-dangle
     // eslint-disable-next-line max-len
     if (!isAdmin(req) && req.authToken._id.toString() !== findParams._id.toString()) return next(403);
-    
     res.json(findParams);
   } catch (err) {
     return next(err);
@@ -83,12 +82,16 @@ const updateUser = async (req, res, next) => {
   try {
     const { uid } = req.params;
     const { body } = req;
-    console.log(body);
+
     const filter = validateParams(uid);
     if (filter === undefined) return next(400);
-    if (!isAdmin(req)) return next(403);
+
+    // eslint-disable-next-line max-len
+    if (!isAdmin(req) && req.authToken._id.toString() !== filter._id.toString()) return next(403);
+
     const findUid = await User.findOne(filter);
     if (!findUid) return next(404);
+    if (!body.email || !body.password) return next(400);
 
     console.log('update');
     console.log(updateData);
