@@ -233,7 +233,6 @@ describe('GET /orders/:orderId', () => {
         return resp.json();
       })
       .then((json) => {
-        console.log('236:', json);
         expect(json.products.length).toBe(1);
         expect(json.products[0].product.name).toBe('Test');
         expect(json.products[0].product.price).toBe(99);

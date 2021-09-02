@@ -1,7 +1,5 @@
 const Order = require('../models/order');
-const Product = require('../models/product');
-const mongoose = require('mongoose')
-
+const { validateParams } = require('../utils/utils')
 // get
 const getOrders = (req, resp, next) => {
     Order.find({}, (err, orders) => {
@@ -12,13 +10,20 @@ const getOrders = (req, resp, next) => {
 }
 
 // get by Order
-const getOrderId = (req, resp, next) => {
+const getOrderId = async (req, resp, next) => {
     let orderId = req.params.orderId
-    Order.findById(orderId, (err, order) => {
-      //console.log('20:', isObjectId(productId));
-      if (!order) return resp.status(404).send({ message: `The product doesn't exist.` })
-      resp.status(200).send( order ) 
-    })
+
+    try {
+        if (!validateParams(orderId)) {
+            return resp.status(404).send({ message: `The product doesn't exist.` })
+        }
+        const oneOrder = await Order.findById(orderId).populate('products.product')
+        
+        return resp.status(200).send( oneOrder ) 
+    } catch (error) {
+        // console.log('26:',err); // ¡Si quiero saber el error, console!
+        next(err);
+    }
 }
 
 // post
@@ -29,10 +34,9 @@ const createOrder = async (req, resp, next) => {
         client,
         products
     } = req.body
-    console.log('32:', products);
+
     try {
         if (Object.keys(req.body).length === 0 || req.body.products.length === 0) return next(400);
-
         // 1hora:22 min video: https://www.youtube.com/watch?v=-bI0diefasA 
         const newOrder = new Order({
             userId,
@@ -47,7 +51,7 @@ const createOrder = async (req, resp, next) => {
         return resp.status(200).send( response )
 
     } catch (err) {
-        console.log('49:',err); //!!!!!! 
+       // console.log('49:',err); // ¡Si quiero saber el error, console!
         next(err);
     }    
 }
