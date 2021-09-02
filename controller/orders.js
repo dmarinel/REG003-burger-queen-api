@@ -1,4 +1,6 @@
 const Order = require('../models/order');
+const Product = require('../models/product');
+const mongoose = require('mongoose')
 
 // get
 const getOrders = (req, resp, next) => {
@@ -32,7 +34,7 @@ const createOrder = async (req, resp, next) => {
         if (Object.keys(req.body).length === 0 || req.body.products.length === 0) return next(400);
 
         // 1hora:22 min video: https://www.youtube.com/watch?v=-bI0diefasA 
-        const newOrder = await new Order({
+        const newOrder = new Order({
             userId,
             client,
             products: products.map((product)=>({
@@ -40,13 +42,12 @@ const createOrder = async (req, resp, next) => {
                 product: product.productId
             }))
         });
-        console.log('43:', newOrder.products);
-        const saveOrder = newOrder(newOrder)
-        saveOrder.save();
-        console.log(saveOrder);
-        return resp.status(200).send( saveOrder )
+        const savedOrder = await newOrder.save();
+        const response = await savedOrder.populate('products.product').execPopulate()
+        return resp.status(200).send( response )
 
     } catch (err) {
+        console.log('49:',err); //!!!!!! 
         next(err);
     }    
 }
