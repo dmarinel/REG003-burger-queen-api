@@ -19,7 +19,7 @@ const orderSchema = new Schema ({
         },
       }],
     status: { 
-      type: Number, 
+      type: String, 
       default: 'pending',
       require: true
     },
