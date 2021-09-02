@@ -35,14 +35,17 @@ describe('POST /orders', () => {
       fetchAsTestUser('/users/test@test.test'),
     ])
       .then((responses) => {
-        console.log('38 test:', responses);
         expect(responses[0].status).toBe(200);
         expect(responses[1].status).toBe(200);
         return Promise.all([responses[0].json(), responses[1].json()]);
       })
       .then(([product, user]) => fetchAsTestUser('/orders', {
         method: 'POST',
-        body: { products: [{ productId: product._id, qty: 5, client: 'client' }], userId: user._id },
+        body: { 
+          products: [{ productId: product._id, qty: 5 }], 
+          client: 'client', 
+          userId: user._id 
+        },
       }))
       .then((resp) => {
         expect(resp.status).toBe(200);
@@ -230,6 +233,7 @@ describe('GET /orders/:orderId', () => {
         return resp.json();
       })
       .then((json) => {
+        console.log('236:', json);
         expect(json.products.length).toBe(1);
         expect(json.products[0].product.name).toBe('Test');
         expect(json.products[0].product.price).toBe(99);

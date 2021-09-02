@@ -29,7 +29,7 @@ const createOrder = async (req, resp, next) => {
         client,
         products
     } = req.body
-
+    console.log('32:', products);
     try {
         if (Object.keys(req.body).length === 0 || req.body.products.length === 0) return next(400);
 
