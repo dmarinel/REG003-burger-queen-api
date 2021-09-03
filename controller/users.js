@@ -87,26 +87,24 @@ const updateUser = async (req, res, next) => {
     const findUid = await User.findOne(filter);
     if (!findUid) return next(404);
 
+    if (body.email && !isValidEmail(body.email)) return next(400);
+    if (body.password && isWeakPassword(body.password)) return next(400);
+
     // eslint-disable-next-line max-len
     if (!isAdmin(req) && req.authToken._id.toString() !== findUid._id.toString()) return next(403);
 
     if (!isAdmin(req) && body.roles) return next(403);
-    // if (!body.email || !body.password) return next(400);
 
     if (Object.keys(body).length === 0) return next(400);
 
     if (body.password) {
       body.password = await User.encryptPassword(body.password);
     }
-    // console.log(body);
 
     // eslint-disable-next-line max-len
     const updateData = await User.findOneAndUpdate(filter, { $set: body }, { new: true, useFindAndModify: false });
-    // console.log(updateData);
-
-    return res.json();
+    return res.json(updateData);
   } catch (error) {
-    console.log(error);
     return next(error);
   }
 };
