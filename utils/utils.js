@@ -24,8 +24,7 @@ const validateParams = (params) => {
 
   if (isValidUid) {
     return { _id: params };
-  }
-  if (isValidEmail(params)) {
+  } if (isValidEmail(params)) {
     return { email: params };
   }
 };

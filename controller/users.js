@@ -32,9 +32,9 @@ const createUsers = async (req, resp, next) => {
     const findUser = await User.findOne({ email });
     if (findUser) return resp.status(403).json({ message: 'User is already registered' });
 
-    const newUser = await new User(req.body);
+    const newUser = new User(req.body);
     newUser.password = await User.encryptPassword(newUser.password);
-    newUser.save();
+    await newUser.save();
 
     return resp.json(newUser);
   } catch (error) {
@@ -65,7 +65,6 @@ const getUserByUidOrEmail = async (req, res, next) => {
     const { uid } = req.params;
     const data = validateParams(uid);
 
-    if (data === undefined) return next(400);
     const findParams = await User.findOne(data);
     if (!findParams) return next(404);
 
@@ -84,19 +83,30 @@ const updateUser = async (req, res, next) => {
     const { body } = req;
 
     const filter = validateParams(uid);
-    if (filter === undefined) return next(400);
-
-    // eslint-disable-next-line max-len
-    if (!isAdmin(req) && req.authToken._id.toString() !== filter._id.toString()) return next(403);
 
     const findUid = await User.findOne(filter);
     if (!findUid) return next(404);
-    if (!body.email || !body.password) return next(400);
 
-    console.log('update');
-    console.log(updateData);
-    return res.send(updateData);
+    // eslint-disable-next-line max-len
+    if (!isAdmin(req) && req.authToken._id.toString() !== findUid._id.toString()) return next(403);
+
+    if (!isAdmin(req) && body.roles) return next(403);
+    // if (!body.email || !body.password) return next(400);
+
+    if (Object.keys(body).length === 0) return next(400);
+
+    if (body.password) {
+      body.password = await User.encryptPassword(body.password);
+    }
+    // console.log(body);
+
+    // eslint-disable-next-line max-len
+    const updateData = await User.findOneAndUpdate(filter, { $set: body }, { new: true, useFindAndModify: false });
+    // console.log(updateData);
+
+    return res.json();
   } catch (error) {
+    console.log(error);
     return next(error);
   }
 };
