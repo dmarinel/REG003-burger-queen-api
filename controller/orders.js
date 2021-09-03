@@ -1,5 +1,6 @@
 const Order = require('../models/order');
 const { validateParams } = require('../utils/utils')
+
 // get
 const getOrders = (req, resp, next) => {
     Order.find({}, (err, orders) => {
@@ -18,7 +19,7 @@ const getOrderId = async (req, resp, next) => {
             return resp.status(404).send({ message: `The product doesn't exist.` })
         }
         const oneOrder = await Order.findById(orderId).populate('products.product')
-        
+
         return resp.status(200).send( oneOrder ) 
     } catch (error) {
         // console.log('26:',err); // ¡Si quiero saber el error, console!
@@ -57,17 +58,30 @@ const createOrder = async (req, resp, next) => {
 }
 
 // put
-const updateOrder = (req, resp, next) => {
+const updateOrder = async (req, resp, next) => {
     let orderId = req.params.orderId
     let bodyUpdated = req.body
-    //let price = req.body.price
-    
-    // son 2 argumentos, el 2do es un objeto con los campos que deseo actualizar
-    Order.findByIdAndUpdate(orderId, bodyUpdated, (err, orderUpdated) => {
-        //if (typeof price !== 'number') return next(400)
-        if (err) return resp.status(404).send({ message: `There is a mistake trying to update the product: ${err}` })
-        resp.status(200).send( bodyUpdated )
-    })
+    const status = ['pending','canceled','preparing', 'cooked','delivered']
+    const newBody = { $set: bodyUpdated }
+
+    try {
+        console.log('67:', bodyUpdated);
+        console.log('68:', newBody);
+        if (!validateParams(orderId)) return next(404)
+        if (Object.keys(bodyUpdated).length === 0) return next(400)
+        if (!status.includes(bodyUpdated.status)) return next(400)
+        
+        const updatedOrder = await Order.findByIdAndUpdate(
+            orderId, 
+            newBody, 
+            { new: true, useFindAndModify: false },
+        )
+        console.log('79:', updatedOrder);
+        return resp.status(200).send( updatedOrder )
+    } catch (error) {
+        console.log(error);
+        next(404);
+    }    
 }
 
 // delete
