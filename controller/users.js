@@ -64,6 +64,7 @@ const getUserByUidOrEmail = async (req, res, next) => {
   try {
     const { uid } = req.params;
     const data = validateParams(uid);
+    if (!data) return next(400);
 
     const findParams = await User.findOne(data);
     if (!findParams) return next(404);
@@ -83,6 +84,7 @@ const updateUser = async (req, res, next) => {
     const { body } = req;
 
     const filter = validateParams(uid);
+    if (!filter) return next(400);
 
     const findUid = await User.findOne(filter);
     if (!findUid) return next(404);
@@ -109,9 +111,30 @@ const updateUser = async (req, res, next) => {
   }
 };
 
+const deleteUser = async (req, res, next) => {
+  try {
+    const { uid } = req.params;
+
+    const data = validateParams(uid);
+    if (!data) return next(400);
+
+    const deleteData = await User.findOne(data);
+    if (!deleteData) return next(404);
+
+    // eslint-disable-next-line max-len
+    if (!isAdmin(req) && req.authToken._id.toString() !== deleteData._id.toString()) return next(403);
+
+    await User.findOneAndDelete(data);
+    res.json(deleteData);
+  } catch (error) {
+    return next(error);
+  }
+};
+
 module.exports = {
   getUsers,
   createUsers,
   getUserByUidOrEmail,
   updateUser,
+  deleteUser,
 };

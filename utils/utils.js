@@ -27,6 +27,7 @@ const validateParams = (params) => {
   } if (isValidEmail(params)) {
     return { email: params };
   }
+  return false;
 };
 
 module.exports = {
