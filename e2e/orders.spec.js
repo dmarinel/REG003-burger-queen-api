@@ -414,7 +414,7 @@ describe('PUT /orders/:orderId', () => {
       .then((json) => expect(json.status).toBe('cooked'))
   ));
 
-  it('should update order (set status to delivered)', () => (
+  it.only('should update order (set status to delivered)', () => (
     Promise.all([
       fetchAsAdmin('/products', {
         method: 'POST',
