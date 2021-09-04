@@ -492,9 +492,12 @@ describe('DELETE /orders/:orderId', () => {
           .then((resp) => ({ resp, _id })),
       )
       .then(({ resp, _id }) => {
+        console.log('495:', _id);
         expect(resp.status).toBe(200);
         return fetchAsAdmin(`/orders/${_id}`);
       })
-      .then((resp) => expect(resp.status).toBe(404))
+      .then((resp) => {
+        console.log('500:', resp);
+        expect(resp.status).toBe(404)})
   ));
 });

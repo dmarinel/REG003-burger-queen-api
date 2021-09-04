@@ -13,13 +13,13 @@ const getOrders = (req, resp, next) => {
 // get by Order
 const getOrderId = async (req, resp, next) => {
     let orderId = req.params.orderId
-
+    
     try {
         if (!validateParams(orderId)) {
             return resp.status(404).send({ message: `The product doesn't exist.` })
         }
         const oneOrder = await Order.findById(orderId).populate('products.product')
-
+        if (!oneOrder) return next(404)
         return resp.status(200).send( oneOrder ) 
     } catch (error) {
         // console.log('26:',err); // ¡Si quiero saber el error, console!
@@ -65,8 +65,6 @@ const updateOrder = async (req, resp, next) => {
     const newBody = { $set: bodyUpdated }
 
     try {
-        console.log('67:', bodyUpdated);
-        console.log('68:', newBody);
         if (!validateParams(orderId)) return next(404)
         if (Object.keys(bodyUpdated).length === 0) return next(400)
         if (!status.includes(bodyUpdated.status)) return next(400)
@@ -76,7 +74,6 @@ const updateOrder = async (req, resp, next) => {
             newBody, 
             { new: true, useFindAndModify: false },
         )
-        console.log('79:', updatedOrder);
         return resp.status(200).send( updatedOrder )
     } catch (error) {
         console.log(error);
@@ -87,11 +84,14 @@ const updateOrder = async (req, resp, next) => {
 // delete
 const deleteOrder = async (req, resp, next) => {
     let orderId = req.params.orderId
+    console.log('90:',orderId);
     try {
+        if (!validateParams(orderId)) return next(404)
         const deleted = await Order.findByIdAndDelete(orderId)  
-        resp.status(200).send({ message: `The product ${deleted} has been removed succesfully.` })
+        console.log(deleted);
+        return resp.status(200).send(deleted)
     } catch (err) {
-        if (err) resp.status(404).send({ message: `There is a mistake trying to delete the product: ${err}` }) 
+        next(err)
     }
 }
 
