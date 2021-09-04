@@ -38,7 +38,6 @@ describe('POST /auth', () => {
       body: { email: config.adminEmail, password: config.adminPassword },
     })
       .then((resp) => {
-        console.log(resp.status);
         expect(resp.status).toBe(200);
         return resp.json();
       })

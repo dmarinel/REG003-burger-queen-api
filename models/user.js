@@ -4,7 +4,6 @@ const mongoosePaginate = require('mongoose-paginate-v2');
 
 const { Schema } = mongoose;
 const bcrypt = require('bcrypt');
-const uniqueValidator = require('mongoose-unique-validator');
 
 const userSchema = new Schema({
   email: {
@@ -26,17 +25,6 @@ const userSchema = new Schema({
   timestamps: true,
   // versionKey: false,
 });
-
-// userSchema.pre('save', async function (next) {
-//   const user = this;
-//   if(!user.isModified('password')) return next()
-
-//   bcrypt.hash(user.password, 10, (err, passwordHash) => {
-//     err & next(err)
-//     user.password = passwordHash;
-//     next()
-//   })
-// })
 
 userSchema.statics.encryptPassword = async (password) => {
   // cuantas veces quiero aplicar el algoritmo: 10 veces
