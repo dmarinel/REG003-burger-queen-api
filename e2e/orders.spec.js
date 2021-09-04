@@ -41,7 +41,11 @@ describe('POST /orders', () => {
       })
       .then(([product, user]) => fetchAsTestUser('/orders', {
         method: 'POST',
-        body: { products: [{ productId: product._id, qty: 5, client: 'client' }], userId: user._id },
+        body: { 
+          products: [{ productId: product._id, qty: 5 }], 
+          client: 'client', 
+          userId: user._id 
+        },
       }))
       .then((resp) => {
         expect(resp.status).toBe(200);
@@ -308,7 +312,8 @@ describe('PUT /orders/:orderId', () => {
       .then((json) => fetchAsTestUser(`/orders/${json._id}`))
       .then((resp) => resp.json())
       .then((json) => fetchAsAdmin(`/orders/${json._id}`, { method: 'PUT' }))
-      .then((resp) => expect(resp.status).toBe(400))
+      .then((resp) => {
+        expect(resp.status).toBe(400)})
   ));
 
   it('should fail with 400 when bad status', () => (
@@ -374,7 +379,7 @@ describe('PUT /orders/:orderId', () => {
       .then((json) => expect(json.status).toBe('preparing'))
   ));
 
-  it('should update order (set status to delivering)', () => (
+  it('should update order (set status to cooked)', () => (
     Promise.all([
       fetchAsAdmin('/products', {
         method: 'POST',
@@ -399,14 +404,14 @@ describe('PUT /orders/:orderId', () => {
         expect(json.status).toBe('pending');
         return fetchAsAdmin(`/orders/${json._id}`, {
           method: 'PUT',
-          body: { status: 'delivering' },
+          body: { status: 'cooked' },
         });
       })
       .then((resp) => {
         expect(resp.status).toBe(200);
         return resp.json();
       })
-      .then((json) => expect(json.status).toBe('delivering'))
+      .then((json) => expect(json.status).toBe('cooked'))
   ));
 
   it('should update order (set status to delivered)', () => (
@@ -442,6 +447,7 @@ describe('PUT /orders/:orderId', () => {
         return resp.json();
       })
       .then((json) => {
+        console.log('450:', json);
         expect(json.status).toBe('delivered');
         expect(typeof json.dateProcessed).toBe('string');
       })

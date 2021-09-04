@@ -60,6 +60,8 @@ const getUsers = async (req, resp, next) => {
     resp.next(error);
   }
 };
+
+// get by Id or Email
 const getUserByUidOrEmail = async (req, res, next) => {
   try {
     const { uid } = req.params;

@@ -1,4 +1,5 @@
 const Order = require('../models/order');
+const { validateParams } = require('../utils/utils')
 
 // get
 const getOrders = (req, resp, next) => {
@@ -10,47 +11,77 @@ const getOrders = (req, resp, next) => {
 }
 
 // get by Order
-const getOrderId = (req, resp, next) => {
+const getOrderId = async (req, resp, next) => {
     let orderId = req.params.orderId
-    Order.findById(orderId, (err, order) => {
-      //console.log('20:', isObjectId(productId));
-      if (!order) return resp.status(404).send({ message: `The product doesn't exist.` })
-      resp.status(200).send( order ) 
-    })
+
+    try {
+        if (!validateParams(orderId)) {
+            return resp.status(404).send({ message: `The product doesn't exist.` })
+        }
+        const oneOrder = await Order.findById(orderId).populate('products.product')
+
+        return resp.status(200).send( oneOrder ) 
+    } catch (error) {
+        // console.log('26:',err); // ¡Si quiero saber el error, console!
+        next(err);
+    }
 }
 
 // post
-const createOrder = (req, resp, next) => {
-    let order = {
-        userId: req.body.userId,
-        client: req.body.client,
-        products: req.body.products,
-    }
-    console.log('32:', order);
-    console.log('33:', req.body);
-    
-    console.log('36:', req.body.products);
-    
-    if (order.products.length === 0 || !order.products) return next(400);
-    
-    Order.create(order, (err, orderStored) => { //cuando se almacene, mongodb le adiciona un id
-        if (err) return next(err);
-        else { resp.status(200).send( orderStored ) }
-    }) 
+const createOrder = async (req, resp, next) => {
+    // 1hora:09 min video: https://www.youtube.com/watch?v=-bI0diefasA 
+    const {
+        userId,
+        client,
+        products
+    } = req.body
+
+    try {
+        if (Object.keys(req.body).length === 0 || req.body.products.length === 0) return next(400);
+        // 1hora:22 min video: https://www.youtube.com/watch?v=-bI0diefasA 
+        const newOrder = new Order({
+            userId,
+            client,
+            products: products.map((product)=>({
+                qty: product.qty,
+                product: product.productId
+            }))
+        });
+        const savedOrder = await newOrder.save();
+        const response = await savedOrder.populate('products.product').execPopulate()
+        return resp.status(200).send( response )
+
+    } catch (err) {
+       // console.log('49:',err); // ¡Si quiero saber el error, console!
+        next(err);
+    }    
 }
 
 // put
-const updateOrder = (req, resp, next) => {
+const updateOrder = async (req, resp, next) => {
     let orderId = req.params.orderId
     let bodyUpdated = req.body
-    //let price = req.body.price
-    
-    // son 2 argumentos, el 2do es un objeto con los campos que deseo actualizar
-    Order.findByIdAndUpdate(orderId, bodyUpdated, (err, orderUpdated) => {
-        //if (typeof price !== 'number') return next(400)
-        if (err) return resp.status(404).send({ message: `There is a mistake trying to update the product: ${err}` })
-        resp.status(200).send( bodyUpdated )
-    })
+    const status = ['pending','canceled','preparing', 'cooked','delivered']
+    const newBody = { $set: bodyUpdated }
+
+    try {
+        console.log('67:', bodyUpdated);
+        console.log('68:', newBody);
+        if (!validateParams(orderId)) return next(404)
+        if (Object.keys(bodyUpdated).length === 0) return next(400)
+        if (!status.includes(bodyUpdated.status)) return next(400)
+        
+        const updatedOrder = await Order.findByIdAndUpdate(
+            orderId, 
+            newBody, 
+            { new: true, useFindAndModify: false },
+        )
+        console.log('79:', updatedOrder);
+        return resp.status(200).send( updatedOrder )
+    } catch (error) {
+        console.log(error);
+        next(404);
+    }    
 }
 
 // delete

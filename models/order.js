@@ -12,10 +12,14 @@ const orderSchema = new Schema ({
     },
     products: [{
         qty: { type: Number, },
-        product: { type: mongoose.ObjectId, },
+        product: { 
+          type: Schema.Types.ObjectId,
+          //The ref option is what tells Mongoose which model to use during population
+          ref: 'Product'
+        },
       }],
     status: { 
-      type: Number, 
+      type: String, 
       default: 'pending',
       require: true
     },
