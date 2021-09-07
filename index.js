@@ -1,5 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const cors = require('cors');
 const morgan = require('morgan');
 const config = require('./config');
 const authMiddleware = require('./middleware/auth');
@@ -29,16 +30,9 @@ app.set('pkg', pkg);
 // a través de un form y convertirlo en un obj de JS
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
+app.use(cors());
 app.use(morgan('dev'));
 app.use(authMiddleware(secret));
-
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Headers', 'Authorization, X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-COntrol-Allow-Request-Method');
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
-  res.header('Allow', 'GET, POST, PUT, DELETE');
-  next();
-});
 
 // Registrar rutas
 routes(app, (err) => {
